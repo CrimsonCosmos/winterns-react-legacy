@@ -1,5 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
+// If this CRA app uses React Router (most likely)
+import { Link } from "react-router-dom";
 
 export default function FrontPage() {
   return (
