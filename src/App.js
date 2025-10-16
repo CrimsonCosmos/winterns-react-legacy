@@ -1,18 +1,20 @@
-import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
-import FrontPage from "./pages/FrontPage";
-import CompanyPage from "./pages/CompanyPage";
-import StudentPage from "./pages/StudentPage";
-import CandidateList from "./pages/CandidateList";
+// App.js
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import FrontPage from "./pages/FrontPage.jsx";
+import CompanyPage from "./pages/CompanyPage.jsx";
+import StudentPage from "./pages/StudentPage.jsx";
+import "./App.css";
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<FrontPage />} />
-      <Route path="/company" element={<CompanyPage />} />
-      <Route path="/apply" element={<StudentPage />} />
-      <Route path="/candidates" element={<CandidateList />} />
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<FrontPage />} />
+        <Route path="/company" element={<CompanyPage />} />
+        <Route path="/student" element={<StudentPage />} />
+        {/* Optional: add a basic 404 that falls back to Home */}
+        <Route path="*" element={<FrontPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
