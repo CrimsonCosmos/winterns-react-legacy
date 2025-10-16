@@ -1,0 +1,232 @@
+/* ===========================
+   Palette — City Sunset
+   =========================== */
+:root{
+  --sunset-1:#eeaf61; /* sand */
+  --sunset-2:#fb9062; /* peach */
+  --sunset-3:#ee5d6c; /* coral */
+  --sunset-4:#ce4993; /* magenta */
+  --sunset-5:#6a0d83; /* deep purple */
+  --text:#111;
+  --white: #fff;
+}
+
+/* ===========================
+   Base / Layout
+   =========================== */
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; }
+body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; color: var(--text); }
+
+.page{
+  min-height:100vh;
+  background: linear-gradient(135deg, var(--sunset-1), var(--sunset-3) 55%, var(--sunset-5));
+  color:#fff;
+}
+
+.student-bg{
+  /* alternate background used on students/company pages */
+  background: radial-gradient(1200px 700px at 20% 0%, var(--sunset-1) 0%, var(--sunset-2) 35%, var(--sunset-3) 60%, var(--sunset-5) 100%);
+}
+
+.container{
+  max-width:1100px;
+  margin:0 auto;          /* centers horizontally */
+  padding:2rem 1.5rem;    /* consistent page padding */
+}
+
+.hero{
+  font-weight:800;
+  font-size: clamp(2rem, 5vw, 4rem);
+  color:#fff;
+  text-align:left;
+  padding:2rem 1.5rem 0 1.5rem; /* matches .container left pad */
+  text-shadow: 0 2px 14px rgba(0,0,0,.25);
+}
+
+.subtitle{ color:#fff; opacity:.9; margin:.5rem 0; }
+
+.brand-lower { text-transform: lowercase; }
+
+/* Simple top nav (optional) */
+nav a{
+  color:#fff; text-decoration:none; font-weight:600;
+  padding:.35rem .6rem; border-radius:8px;
+}
+nav a:hover{ background: rgba(255,255,255,.12); }
+
+/* ===========================
+   Front Page — grid & cards
+   =========================== */
+.grid{ display:grid; grid-template-columns: 1fr; gap:1.5rem; }
+@media (min-width: 840px){ .grid{ grid-template-columns: 1fr 1fr; } }
+
+.card{
+  border-radius:18px;
+  padding:2rem;
+  box-shadow: 0 12px 30px rgba(0,0,0,.18);
+  backdrop-filter: blur(2px);
+  color:#fff;
+  border: 1px solid rgba(255,255,255,.35);
+}
+.card h2{
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  margin:0 0 .75rem;
+}
+.card p{ margin:0 0 1.25rem; color: rgba(255,255,255,.9); line-height:1.45; }
+
+/* Card color treatments */
+.card.student{
+  background: linear-gradient(160deg, var(--sunset-2), var(--sunset-3));
+}
+.card.pro{
+  background: linear-gradient(160deg, var(--sunset-4), var(--sunset-5));
+}
+
+/* Buttons */
+.btn{
+  appearance:none;
+  border:none;
+  border-radius:12px;
+  padding: .9rem 1.25rem;
+  font-size:1.05rem;
+  font-weight:700;
+  cursor:pointer;
+  color:#fff;
+  transition: transform .05s ease, filter .2s ease, box-shadow .2s ease;
+  box-shadow: 0 8px 20px rgba(0,0,0,.18);
+}
+.btn:active{ transform: scale(.98); }
+.btn:focus-visible{
+  outline: 3px solid #fff; outline-offset: 2px;
+}
+
+.btn-student{ background: var(--sunset-1); color:#3b2400; }
+.btn-student:hover{ filter: brightness(1.05); }
+
+.btn-pro{ background: var(--sunset-4); }
+.btn-pro:hover{ filter: brightness(1.05); }
+
+/* Bottom-left brand link */
+.corner-link{
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 50;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color:#fff;
+  text-decoration: none;
+  background: rgba(0,0,0,.25);
+  border: 1px solid rgba(255,255,255,.35);
+  padding: .45rem .7rem;
+  border-radius: 10px;
+  backdrop-filter: blur(4px);
+  transition: transform .08s ease, filter .2s ease, background .2s ease;
+}
+.corner-link:hover{ transform: translateY(-1px); filter: brightness(1.05); }
+
+/* ===========================
+   Student Page — form
+   =========================== */
+.form-card{
+  background: rgba(255,255,255,.10);
+  border: 1px solid rgba(255,255,255,.35);
+  border-radius: 18px;
+  box-shadow: 0 20px 40px rgba(0,0,0,.18);
+  padding: 1.5rem;
+}
+
+.section{
+  border: 1px solid rgba(255,255,255,.25);
+  border-radius: 14px;
+  padding: 1.0rem;
+  margin: 1rem 0;
+  background: linear-gradient(160deg, rgba(255,255,255,.10), rgba(255,255,255,.04));
+}
+.section > legend{
+  padding: 0 .5rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.field{ display:flex; flex-direction:column; gap:.4rem; }
+.field input, .field select, .field textarea{
+  background: rgba(255,255,255,.9);
+  border: 1px solid rgba(0,0,0,.1);
+  border-radius: 10px;
+  padding: .7rem .9rem;
+  outline: none;
+}
+.field input:focus, .field select:focus, .field textarea:focus{
+  border-color: var(--sunset-4);
+  box-shadow: 0 0 0 3px rgba(206,73,147,.25);
+}
+.field.file input{ background:#fff; }
+.file-name{ margin-top:.25rem; font-size:.9rem; color:#fff; opacity:.9; }
+
+.grid-2{ display:grid; gap:1rem; grid-template-columns: 1fr; }
+.grid-3{ display:grid; gap:1rem; grid-template-columns: 1fr; }
+@media (min-width: 820px){
+  .grid-2{ grid-template-columns: 1fr 1fr; }
+  .grid-3{ grid-template-columns: 1fr 1fr 1fr; }
+}
+
+.actions{ display:flex; justify-content:flex-end; margin-top:1rem; }
+
+/* ===========================
+   Company Page
+   =========================== */
+.btn-row{ display:flex; gap:1rem; flex-wrap:wrap; margin:1rem 0 1.5rem; }
+.btn-home{ background: var(--sunset-1); color:#3b2400; }
+.btn-home:hover{ filter: brightness(1.05); }
+
+.company-card{
+  background: linear-gradient(160deg, rgba(255,255,255,.12), rgba(255,255,255,.05));
+  border: 1px solid rgba(255,255,255,.35);
+  border-radius: 18px;
+  padding: 1.25rem;
+  box-shadow: 0 20px 40px rgba(0,0,0,.18);
+}
+
+.company-flex{
+  display:grid;
+  grid-template-columns: 1fr;
+  gap:1.25rem;
+}
+@media (min-width: 860px){
+  .company-flex{
+    grid-template-columns: minmax(280px, 380px) 1fr; /* image | text */
+    align-items:center;
+  }
+}
+
+.founder-img{
+  max-width: 380px;
+  width: 100%;
+  height: auto;
+  border-radius: 14px;
+  box-shadow: 0 12px 28px rgba(0,0,0,.25);
+  border: 1px solid rgba(255,255,255,.35);
+}
+
+.company-copy{ display:flex; flex-direction:column; gap:.6rem; }
+.contact-callout{
+  margin-top:.5rem;
+  display:inline-block;
+  background: rgba(0,0,0,.25);
+  border: 1px solid rgba(255,255,255,.35);
+  color:#fff;
+  padding:.6rem .9rem;
+  border-radius: 999px;
+  backdrop-filter: blur(4px);
+  font-weight: 700;
+}
+
+/* ===========================
+   Utility
+   =========================== */
+.visually-hidden{
+  position:absolute!important; height:1px; width:1px; overflow:hidden;
+  clip: rect(1px, 1px, 1px, 1px); white-space: nowrap; border:0; padding:0; margin:-1px;
+}
