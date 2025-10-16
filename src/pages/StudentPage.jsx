@@ -1,284 +1,100 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { addCandidate } from "../store/candidates";
-
-async function fileToDataURL(file) {
-  if (!file) return "";
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(String(reader.result));
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
+import React, { useState } from "react";
+import { saveCandidate } from "../store/candidates";
 
 export default function StudentPage() {
-  const nav = useNavigate();
+  const [form, setForm] = useState({
+    name: "", email: "", school: "", major: "", gradYear: "",
+    summary: "",
+    gender: "", ethnicity: "", veteran: "", disability: ""
+  });
 
-  // Core profile
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [school, setSchool] = useState("");
-  const [major, setMajor] = useState("");
-  const [degreeLevel, setDegreeLevel] = useState("");
-  const [gradYear, setGradYear] = useState("");
-  const [gpa, setGpa] = useState("");
-  const [skills, setSkills] = useState("");
-  const [about, setAbout] = useState("");
-
-  // Work eligibility & logistics
-  const [workAuth, setWorkAuth] = useState("");
-  const [noSponsorship, setNoSponsorship] = useState("");
-  const [term, setTerm] = useState("");
-  const [dates, setDates] = useState("");
-
-  // Links (optional)
-  const [portfolioUrl, setPortfolioUrl] = useState("");
-  const [githubUrl, setGithubUrl] = useState("");
-  const [linkedinUrl, setLinkedinUrl] = useState("");
-
-  // Uploads
-  const [resumeFile, setResumeFile] = useState(null);
-  const [transcriptFile, setTranscriptFile] = useState(null);
-
-  // Diversity & Compliance
-  const [gender, setGender] = useState("");
-  const [raceEthnicity, setRaceEthnicity] = useState("");
-  const [veteranStatus, setVeteranStatus] = useState("");
-  const [disabilityStatus, setDisabilityStatus] = useState("");
-
-  // Consent
-  const [certify, setCertify] = useState(false);
-
-  async function handleSubmit(e) {
+  function update(k, v){ setForm(s => ({...s, [k]: v})); }
+  function submit(e){
     e.preventDefault();
-
-    if (!certify) {
-      alert("Please certify that your information is accurate.");
-      return;
-    }
-    if (!resumeFile) {
-      alert("Please upload your résumé.");
-      return;
-    }
-
-    const resumeDataUrl = await fileToDataURL(resumeFile);
-    const transcriptDataUrl = await fileToDataURL(transcriptFile);
-
-    addCandidate({
-      name,
-      email,
-      school,
-      major,
-      degreeLevel,
-      gradYear,
-      gpa,
-      skills,
-      about,
-      workAuth,
-      noSponsorship,
-      term,
-      dates,
-      portfolioUrl,
-      githubUrl,
-      linkedinUrl,
-      resumeDataUrl,
-      transcriptDataUrl,
-      gender,
-      raceEthnicity,
-      veteranStatus,
-      disabilityStatus,
-    });
-
-    nav("/candidates");
+    saveCandidate(form);
+    alert("Application submitted! Thank you.");
+    setForm({ name:"", email:"", school:"", major:"", gradYear:"", summary:"", gender:"", ethnicity:"", veteran:"", disability:"" });
   }
 
   return (
-    <main className="page student-bg">
-      <div className="container">
-        <h1 className="hero">Student Profile</h1>
+    <main className="gradient-bg">
+      <div className="container section">
+        <form className="card" onSubmit={submit}>
+          <h2 style={{marginTop:0}}>Student Application</h2>
 
-        <form className="form-card" onSubmit={handleSubmit}>
-          {/* Identity & Academics */}
-          <div className="grid-2">
-            <label className="field">
-              <span>Name</span>
-              <input value={name} onChange={(e) => setName(e.target.value)} required />
-            </label>
-            <label className="field">
-              <span>Email</span>
-              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-            </label>
-          </div>
-
-          <div className="grid-3">
-            <label className="field">
-              <span>School</span>
-              <input value={school} onChange={(e) => setSchool(e.target.value)} />
-            </label>
-            <label className="field">
-              <span>Major</span>
-              <input value={major} onChange={(e) => setMajor(e.target.value)} />
-            </label>
-            <label className="field">
-              <span>Degree Level</span>
-              <select value={degreeLevel} onChange={(e) => setDegreeLevel(e.target.value)}>
-                <option value="">Select…</option>
-                <option>Bachelor’s</option>
-                <option>Master’s</option>
-                <option>PhD</option>
-                <option>Associate</option>
-                <option>Certificate/Bootcamp</option>
-                <option>Other</option>
-              </select>
-            </label>
-          </div>
-
-          <div className="grid-3">
-            <label className="field">
-              <span>Grad Year</span>
-              <input value={gradYear} onChange={(e) => setGradYear(e.target.value)} placeholder="2026" />
-            </label>
-            <label className="field">
-              <span>GPA (optional)</span>
-              <input value={gpa} onChange={(e) => setGpa(e.target.value)} placeholder="3.7" />
-            </label>
-            <label className="field">
-              <span>Skills (comma-separated)</span>
-              <input value={skills} onChange={(e) => setSkills(e.target.value)} placeholder="Python, React, SQL" />
-            </label>
-          </div>
-
-          {/* Work Authorization & Term */}
-          <div className="grid-3">
-            <label className="field">
-              <span>Work Authorization Status</span>
-              <select value={workAuth} onChange={(e) => setWorkAuth(e.target.value)} required>
-                <option value="">Select…</option>
-                <option>U.S. Citizen or Permanent Resident</option>
-                <option>F-1 Student (CPT/OPT Eligible)</option>
-                <option>Other (specify in About)</option>
-              </select>
-            </label>
-
-            <label className="field">
-              <span>Authorization to Work in the U.S. Without Sponsorship</span>
-              <select value={noSponsorship} onChange={(e) => setNoSponsorship(e.target.value)} required>
-                <option value="">Select…</option>
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
-              </select>
-            </label>
-
-            <label className="field">
-              <span>Preferred Internship Term</span>
-              <input value={term} onChange={(e) => setTerm(e.target.value)} placeholder="Summer 2026" />
-            </label>
-          </div>
-
-          <label className="field">
-            <span>Preferred Dates / Timing (optional)</span>
-            <input value={dates} onChange={(e) => setDates(e.target.value)} placeholder="May 20 – Aug 15, 2026" />
-          </label>
-
-          {/* Links */}
-          <div className="grid-3">
-            <label className="field">
-              <span>Portfolio URL (optional)</span>
-              <input value={portfolioUrl} onChange={(e) => setPortfolioUrl(e.target.value)} placeholder="https://…" />
-            </label>
-            <label className="field">
-              <span>GitHub URL (optional)</span>
-              <input value={githubUrl} onChange={(e) => setGithubUrl(e.target.value)} placeholder="https://github.com/…" />
-            </label>
-            <label className="field">
-              <span>LinkedIn URL (optional)</span>
-              <input value={linkedinUrl} onChange={(e) => setLinkedinUrl(e.target.value)} placeholder="https://www.linkedin.com/in/…" />
-            </label>
-          </div>
-
-          {/* Uploads */}
-          <div className="grid-2">
-            <label className="field">
-              <span>Upload Résumé (PDF/DOC)</span>
-              <input type="file" accept=".pdf,.doc,.docx" onChange={(e) => setResumeFile(e.target.files?.[0] || null)} required />
-            </label>
-            <label className="field">
-              <span>Upload Transcript (optional)</span>
-              <input type="file" accept=".pdf,.png,.jpg,.jpeg" onChange={(e) => setTranscriptFile(e.target.files?.[0] || null)} />
-            </label>
-          </div>
-
-          {/* Diversity & Compliance */}
-          <fieldset className="field" style={{ border: "1px solid rgba(255,255,255,0.25)", borderRadius: "12px", padding: "1rem" }}>
-            <legend style={{ color: "#fff", fontWeight: "700" }}>Diversity & Compliance</legend>
-
-            <div className="grid-2">
-              <label className="field">
-                <span>Gender</span>
-                <select value={gender} onChange={(e) => setGender(e.target.value)}>
-                  <option value="">Select…</option>
-                  <option>Female</option>
-                  <option>Male</option>
-                  <option>Non-binary</option>
-                  <option>Other</option>
-                  <option>Prefer not to answer</option>
-                </select>
-              </label>
-
-              <label className="field">
-                <span>Ethnicity / Race</span>
-                <select value={raceEthnicity} onChange={(e) => setRaceEthnicity(e.target.value)}>
-                  <option value="">Select…</option>
-                  <option>Hispanic or Latino</option>
-                  <option>White</option>
-                  <option>Black or African American</option>
-                  <option>Asian</option>
-                  <option>American Indian or Alaska Native</option>
-                  <option>Native Hawaiian or Other Pacific Islander</option>
-                  <option>Two or More Races</option>
-                  <option>Prefer not to answer</option>
-                </select>
-              </label>
+          <div className="row row-2">
+            <div>
+              <label className="label">Full Name</label>
+              <input className="input" value={form.name} onChange={e=>update("name", e.target.value)} placeholder="Jane Doe"/>
             </div>
-
-            <div className="grid-2">
-              <label className="field">
-                <span>Veteran Status</span>
-                <select value={veteranStatus} onChange={(e) => setVeteranStatus(e.target.value)}>
-                  <option value="">Select…</option>
-                  <option>Not a veteran</option>
-                  <option>Protected veteran</option>
-                  <option>Not a protected veteran</option>
-                  <option>Prefer not to answer</option>
-                </select>
-              </label>
-
-              <label className="field">
-                <span>Disability Status</span>
-                <select value={disabilityStatus} onChange={(e) => setDisabilityStatus(e.target.value)}>
-                  <option value="">Select…</option>
-                  <option>Yes, I have a disability</option>
-                  <option>No, I do not have a disability</option>
-                  <option>Prefer not to answer</option>
-                </select>
-              </label>
+            <div>
+              <label className="label">Email</label>
+              <input className="input" type="email" value={form.email} onChange={e=>update("email", e.target.value)} placeholder="jane@example.com"/>
             </div>
-          </fieldset>
+          </div>
 
-          {/* About + Consent */}
-          <label className="field">
-            <span>About You</span>
-            <textarea rows="4" value={about} onChange={(e) => setAbout(e.target.value)} placeholder="Short bio, highlights, work eligibility notes if needed…" />
-          </label>
+          <div className="row row-2">
+            <div>
+              <label className="label">School</label>
+              <input className="input" value={form.school} onChange={e=>update("school", e.target.value)} placeholder="University of Illinois"/>
+            </div>
+            <div>
+              <label className="label">Major</label>
+              <input className="input" value={form.major} onChange={e=>update("major", e.target.value)} placeholder="Computer Science"/>
+            </div>
+          </div>
 
-          <label className="field checkbox">
-            <input type="checkbox" checked={certify} onChange={(e) => setCertify(e.target.checked)} required />
-            <span>I certify that the information provided is true and accurate to the best of my knowledge.</span>
-          </label>
+          <div className="row row-2">
+            <div>
+              <label className="label">Graduation Year</label>
+              <input className="input" value={form.gradYear} onChange={e=>update("gradYear", e.target.value)} placeholder="2027"/>
+            </div>
+          </div>
 
-          <div className="actions">
-            <button className="btn btn-student" type="submit">Submit Profile</button>
+          <div>
+            <label className="label">Summary (optional)</label>
+            <textarea className="textarea" rows={4} value={form.summary} onChange={e=>update("summary", e.target.value)} placeholder="Briefly describe your experience and interests."/>
+          </div>
+
+          <h3 style={{marginTop:24}}>Diversity & Compliance (optional)</h3>
+          <div className="row row-2">
+            <div>
+              <label className="label">Gender (optional)</label>
+              <select className="select" value={form.gender} onChange={e=>update("gender", e.target.value)}>
+                <option value="">I prefer not to answer</option>
+                <option>Woman</option><option>Man</option><option>Non-binary</option><option>Self-describe</option>
+              </select>
+            </div>
+            <div>
+              <label className="label">Ethnicity / Race (optional)</label>
+              <select className="select" value={form.ethnicity} onChange={e=>update("ethnicity", e.target.value)}>
+                <option value="">I prefer not to answer</option>
+                <option>Asian</option><option>Black or African American</option><option>Hispanic or Latino</option>
+                <option>Middle Eastern or North African</option><option>Native American or Alaska Native</option>
+                <option>Native Hawaiian or Other Pacific Islander</option><option>White</option><option>Two or more</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="row row-2">
+            <div>
+              <label className="label">Veteran Status (optional)</label>
+              <select className="select" value={form.veteran} onChange={e=>update("veteran", e.target.value)}>
+                <option value="">I prefer not to answer</option>
+                <option>Not a veteran</option><option>Veteran</option>
+              </select>
+            </div>
+            <div>
+              <label className="label">Disability Status (optional)</label>
+              <select className="select" value={form.disability} onChange={e=>update("disability", e.target.value)}>
+                <option value="">I prefer not to answer</option>
+                <option>No disability</option><option>Has a disability</option>
+              </select>
+            </div>
+          </div>
+
+          <div style={{marginTop:20, display:"flex", gap:12}}>
+            <button className="btn btn-primary" type="submit">Submit Application</button>
           </div>
         </form>
       </div>

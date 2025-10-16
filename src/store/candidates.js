@@ -1,24 +1,18 @@
-// src/store/candidates.js
 const KEY = "winterns:candidates";
 
-export function getCandidates() {
+export function getCandidates(){
   try {
-    return JSON.parse(localStorage.getItem(KEY) || "[]");
+    const raw = localStorage.getItem(KEY);
+    return raw ? JSON.parse(raw) : [];
   } catch {
     return [];
   }
 }
 
-export function addCandidate(candidate) {
+export function saveCandidate(candidate){
   const list = getCandidates();
-  const withMeta = {
-    id: (typeof crypto !== "undefined" && crypto.randomUUID)
-      ? crypto.randomUUID()
-      : String(Date.now()),
-    createdAt: Date.now(),
-    ...candidate,
-  };
-  list.push(withMeta);
-  localStorage.setItem(KEY, JSON.stringify(list));
-  return withMeta;
+  const entry = { ...candidate, createdAt: new Date().toISOString() };
+  const next = [entry, ...list];
+  localStorage.setItem(KEY, JSON.stringify(next));
+  return entry;
 }

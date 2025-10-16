@@ -3,7 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import FrontPage from "./pages/FrontPage";
 import CompanyPage from "./pages/CompanyPage";
 import StudentPage from "./pages/StudentPage";
-import CandidateList from "./pages/CandidateList"; // if you have this page
+import CandidateList from "./pages/CandidateList";
 
 export default function App() {
   return (
@@ -12,7 +12,6 @@ export default function App() {
       <Route path="/company" element={<CompanyPage />} />
       <Route path="/apply" element={<StudentPage />} />
       <Route path="/candidates" element={<CandidateList />} />
-      {/* fallback */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
