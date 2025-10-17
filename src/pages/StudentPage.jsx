@@ -1,103 +1,187 @@
 import React, { useState } from "react";
-import { saveCandidate } from "../store/candidates";
+import "../App.css";
 
-export default function StudentPage() {
-  const [form, setForm] = useState({
-    name: "", email: "", school: "", major: "", gradYear: "",
-    summary: "",
-    gender: "", ethnicity: "", veteran: "", disability: ""
+const StudentPage = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    school: "",
+    major: "",
+    graduation: "",
+    role: "",
+    // resume file metadata + data URL for rendering later
+    resumeName: "",
+    resumeType: "",
+    resumeDataUrl: "", // data:... base64 string
+    // optional diversity
+    gender: "",
+    ethnicity: "",
+    veteran: "",
+    disability: "",
   });
 
-  function update(k, v){ setForm(s => ({...s, [k]: v})); }
-  function submit(e){
+  // Handle text/select changes
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+    if (!files) {
+      setFormData((p) => ({ ...p, [name]: value }));
+      return;
+    }
+
+    // File selected
+    const file = files[0];
+    if (!file) return;
+
+    // Read as Data URL so we can store it in localStorage
+    const reader = new FileReader();
+    reader.onload = () => {
+      setFormData((p) => ({
+        ...p,
+        resumeName: file.name,
+        resumeType: file.type || "application/octet-stream",
+        resumeDataUrl: reader.result, // e.g. data:application/pdf;base64,....
+      }));
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    saveCandidate(form);
-    alert("Application submitted! Thank you.");
-    setForm({ name:"", email:"", school:"", major:"", gradYear:"", summary:"", gender:"", ethnicity:"", veteran:"", disability:"" });
-  }
+
+    // WARNING: localStorage has size limits; keep files small if using this approach.
+    const existing = JSON.parse(localStorage.getItem("winterns:candidates") || "[]");
+    const updated = [
+      ...existing,
+      { ...formData, submittedAt: Date.now() },
+    ];
+    localStorage.setItem("winterns:candidates", JSON.stringify(updated));
+
+    alert("Application submitted successfully!");
+
+    // Reset (keep diversity fields optional)
+    setFormData({
+      name: "",
+      email: "",
+      school: "",
+      major: "",
+      graduation: "",
+      role: "",
+      resumeName: "",
+      resumeType: "",
+      resumeDataUrl: "",
+      gender: "",
+      ethnicity: "",
+      veteran: "",
+      disability: "",
+    });
+  };
 
   return (
-    <main className="gradient-bg">
-      <div className="container section">
-        <form className="card" onSubmit={submit}>
-          <h2 style={{marginTop:0}}>Student Application</h2>
+    <div className="page student-bg">
+      <div className="content">
+        <h1>Student Application</h1>
 
-          <div className="row row-2">
-            <div>
-              <label className="label">Full Name</label>
-              <input className="input" value={form.name} onChange={e=>update("name", e.target.value)} placeholder="Jane Doe"/>
-            </div>
-            <div>
-              <label className="label">Email</label>
-              <input className="input" type="email" value={form.email} onChange={e=>update("email", e.target.value)} placeholder="jane@example.com"/>
-            </div>
-          </div>
+        <form onSubmit={handleSubmit} className="application-form">
+          <label>
+            Full Name
+            <input name="name" value={formData.name} onChange={handleChange} required />
+          </label>
 
-          <div className="row row-2">
-            <div>
-              <label className="label">School</label>
-              <input className="input" value={form.school} onChange={e=>update("school", e.target.value)} placeholder="University of Illinois"/>
-            </div>
-            <div>
-              <label className="label">Major</label>
-              <input className="input" value={form.major} onChange={e=>update("major", e.target.value)} placeholder="Computer Science"/>
-            </div>
-          </div>
+          <label>
+            Email
+            <input type="email" name="email" value={formData.email} onChange={handleChange} required />
+          </label>
 
-          <div className="row row-2">
-            <div>
-              <label className="label">Graduation Year</label>
-              <input className="input" value={form.gradYear} onChange={e=>update("gradYear", e.target.value)} placeholder="2027"/>
-            </div>
-          </div>
+          <label>
+            School / University
+            <input name="school" value={formData.school} onChange={handleChange} />
+          </label>
 
-          <div>
-            <label className="label">Summary (optional)</label>
-            <textarea className="textarea" rows={4} value={form.summary} onChange={e=>update("summary", e.target.value)} placeholder="Briefly describe your experience and interests."/>
-          </div>
+          <label>
+            Major / Field of Study
+            <input name="major" value={formData.major} onChange={handleChange} />
+          </label>
 
-          <h3 style={{marginTop:24}}>Diversity & Compliance (optional)</h3>
-          <div className="row row-2">
-            <div>
-              <label className="label">Gender (optional)</label>
-              <select className="select" value={form.gender} onChange={e=>update("gender", e.target.value)}>
-                <option value="">I prefer not to answer</option>
-                <option>Woman</option><option>Man</option><option>Non-binary</option><option>Self-describe</option>
-              </select>
-            </div>
-            <div>
-              <label className="label">Ethnicity / Race (optional)</label>
-              <select className="select" value={form.ethnicity} onChange={e=>update("ethnicity", e.target.value)}>
-                <option value="">I prefer not to answer</option>
-                <option>Asian</option><option>Black or African American</option><option>Hispanic or Latino</option>
-                <option>Middle Eastern or North African</option><option>Native American or Alaska Native</option>
-                <option>Native Hawaiian or Other Pacific Islander</option><option>White</option><option>Two or more</option>
-              </select>
-            </div>
-          </div>
+          <label>
+            Expected Graduation Year
+            <input name="graduation" value={formData.graduation} onChange={handleChange} />
+          </label>
 
-          <div className="row row-2">
-            <div>
-              <label className="label">Veteran Status (optional)</label>
-              <select className="select" value={form.veteran} onChange={e=>update("veteran", e.target.value)}>
-                <option value="">I prefer not to answer</option>
-                <option>Not a veteran</option><option>Veteran</option>
-              </select>
-            </div>
-            <div>
-              <label className="label">Disability Status (optional)</label>
-              <select className="select" value={form.disability} onChange={e=>update("disability", e.target.value)}>
-                <option value="">I prefer not to answer</option>
-                <option>No disability</option><option>Has a disability</option>
-              </select>
-            </div>
-          </div>
+          <label>
+            Desired Role / Internship Type
+            <select name="role" value={formData.role} onChange={handleChange} required>
+              <option value="">Select a role...</option>
+              <option>Software Engineering</option>
+              <option>Data Science</option>
+              <option>Product Management</option>
+              <option>Design / UI/UX</option>
+              <option>Marketing / Business</option>
+              <option>Other</option>
+            </select>
+          </label>
 
-          <div style={{marginTop:20, display:"flex", gap:12}}>
-            <button className="btn btn-primary" type="submit">Submit Application</button>
-          </div>
+          <label>
+            Upload Resume
+            <input type="file" name="resume" accept=".pdf,.doc,.docx,.txt,.png,.jpg,.jpeg" onChange={handleChange} />
+            {formData.resumeName && (
+              <small style={{ color: "#fff", opacity: 0.85 }}>Selected: {formData.resumeName}</small>
+            )}
+          </label>
+
+          <h2>Diversity & Compliance (optional)</h2>
+
+          <label>
+            Gender
+            <select name="gender" value={formData.gender} onChange={handleChange}>
+              <option value="">Select...</option>
+              <option>Female</option>
+              <option>Male</option>
+              <option>Non-binary</option>
+              <option>Other</option>
+              <option>I prefer not to answer</option>
+            </select>
+          </label>
+
+          <label>
+            Ethnicity / Race
+            <select name="ethnicity" value={formData.ethnicity} onChange={handleChange}>
+              <option value="">Select...</option>
+              <option>Asian</option>
+              <option>Black or African American</option>
+              <option>Hispanic or Latino</option>
+              <option>Native American or Alaska Native</option>
+              <option>Native Hawaiian or Pacific Islander</option>
+              <option>White</option>
+              <option>Two or more races</option>
+              <option>I prefer not to answer</option>
+            </select>
+          </label>
+
+          <label>
+            Veteran Status
+            <select name="veteran" value={formData.veteran} onChange={handleChange}>
+              <option value="">Select...</option>
+              <option>Yes</option>
+              <option>No</option>
+              <option>I prefer not to answer</option>
+            </select>
+          </label>
+
+          <label>
+            Disability Status
+            <select name="disability" value={formData.disability} onChange={handleChange}>
+              <option value="">Select...</option>
+              <option>Yes</option>
+              <option>No</option>
+              <option>I prefer not to answer</option>
+            </select>
+          </label>
+
+          <button type="submit" className="submit-btn">Submit Application</button>
         </form>
       </div>
-    </main>
+    </div>
   );
-}
+};
+
+export default StudentPage;

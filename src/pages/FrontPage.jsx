@@ -17,7 +17,7 @@ export default function FrontPage() {
         <section className="card pro">
           <h2>I’m a Professional</h2>
           <p>Looking for great interns to join your team or company.</p>
-          <Link to="/company" className="btn btn-pro">View Company Info</Link>
+          <Link to="/applications" className="btn btn-pro">View Applications</Link>
         </section>
       </main>
 
