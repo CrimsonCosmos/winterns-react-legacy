@@ -1,276 +1,103 @@
 import React, { useState } from "react";
+import { saveCandidate } from "../store/candidates";
 
 export default function StudentPage() {
-  const [resumeName, setResumeName] = useState("");
-  const [coverName, setCoverName] = useState("");
+  const [form, setForm] = useState({
+    name: "", email: "", school: "", major: "", gradYear: "",
+    summary: "",
+    gender: "", ethnicity: "", veteran: "", disability: ""
+  });
 
-  const onSubmit = (e) => {
+  function update(k, v){ setForm(s => ({...s, [k]: v})); }
+  function submit(e){
     e.preventDefault();
-    // TODO: send form data to your backend or service (e.g., Formspree/Supabase/Firebase)
-    alert("Thanks! Your application has been recorded (demo).");
-  };
+    saveCandidate(form);
+    alert("Application submitted! Thank you.");
+    setForm({ name:"", email:"", school:"", major:"", gradYear:"", summary:"", gender:"", ethnicity:"", veteran:"", disability:"" });
+  }
 
   return (
-    <div className="page student-bg">
-      <header className="container">
-        <h1 className="hero">Internship Application</h1>
-        <p className="subtitle">
-          Fill out the fields below. Items marked <span aria-hidden>★</span> are required.
-        </p>
-      </header>
+    <main className="gradient-bg">
+      <div className="container section">
+        <form className="card" onSubmit={submit}>
+          <h2 style={{marginTop:0}}>Student Application</h2>
 
-      <main className="container">
-        <form className="form-card" onSubmit={onSubmit}>
-          {/* ───────────────────────── Personal Info ───────────────────────── */}
-          <fieldset className="section">
-            <legend>Personal information</legend>
-
-            <div className="grid-2">
-              <div className="field">
-                <label htmlFor="firstName">First name ★</label>
-                <input id="firstName" name="firstName" required autoComplete="given-name" />
-              </div>
-              <div className="field">
-                <label htmlFor="lastName">Last name ★</label>
-                <input id="lastName" name="lastName" required autoComplete="family-name" />
-              </div>
+          <div className="row row-2">
+            <div>
+              <label className="label">Full Name</label>
+              <input className="input" value={form.name} onChange={e=>update("name", e.target.value)} placeholder="Jane Doe"/>
             </div>
-
-            <div className="grid-2">
-              <div className="field">
-                <label htmlFor="email">Email ★</label>
-                <input id="email" name="email" type="email" required autoComplete="email" />
-              </div>
-              <div className="field">
-                <label htmlFor="phone">Phone ★</label>
-                <input
-                  id="phone"
-                  name="phone"
-                  type="tel"
-                  required
-                  placeholder="e.g., +1 555-123-4567"
-                />
-              </div>
+            <div>
+              <label className="label">Email</label>
+              <input className="input" type="email" value={form.email} onChange={e=>update("email", e.target.value)} placeholder="jane@example.com"/>
             </div>
+          </div>
 
-            <div className="grid-2">
-              <div className="field">
-                <label htmlFor="city">Current city ★</label>
-                <input id="city" name="city" required />
-              </div>
-              <div className="field">
-                <label htmlFor="country">Country/Region ★</label>
-                <input id="country" name="country" required />
-              </div>
+          <div className="row row-2">
+            <div>
+              <label className="label">School</label>
+              <input className="input" value={form.school} onChange={e=>update("school", e.target.value)} placeholder="University of Illinois"/>
             </div>
-
-            <div className="grid-2">
-              <div className="field">
-                <label htmlFor="workAuth">Work authorization ★</label>
-                <select id="workAuth" name="workAuth" required defaultValue="">
-                  <option value="" disabled>Select one</option>
-                  <option value="citizen">Citizen / Permanent Resident</option>
-                  <option value="visa">Student Visa (F-1/J-1)</option>
-                  <option value="other">Other</option>
-                </select>
-              </div>
-              <div className="field">
-                <label htmlFor="sponsorship">Sponsorship needed now or in future? ★</label>
-                <select id="sponsorship" name="sponsorship" required defaultValue="">
-                  <option value="" disabled>Select one</option>
-                  <option value="no">No</option>
-                  <option value="yes">Yes</option>
-                  <option value="unsure">Unsure</option>
-                </select>
-              </div>
+            <div>
+              <label className="label">Major</label>
+              <input className="input" value={form.major} onChange={e=>update("major", e.target.value)} placeholder="Computer Science"/>
             </div>
-          </fieldset>
+          </div>
 
-          {/* ───────────────────────── Education ───────────────────────── */}
-          <fieldset className="section">
-            <legend>Education</legend>
-
-            <div className="field">
-              <label htmlFor="school">University / School ★</label>
-              <input id="school" name="school" required />
+          <div className="row row-2">
+            <div>
+              <label className="label">Graduation Year</label>
+              <input className="input" value={form.gradYear} onChange={e=>update("gradYear", e.target.value)} placeholder="2027"/>
             </div>
+          </div>
 
-            <div className="grid-3">
-              <div className="field">
-                <label htmlFor="degree">Degree ★</label>
-                <select id="degree" name="degree" required defaultValue="">
-                  <option value="" disabled>Select one</option>
-                  <option>Bachelor’s</option>
-                  <option>Master’s</option>
-                  <option>PhD</option>
-                  <option>Other</option>
-                </select>
-              </div>
-              <div className="field">
-                <label htmlFor="major">Major ★</label>
-                <input id="major" name="major" required />
-              </div>
-              <div className="field">
-                <label htmlFor="grad">Graduation (MM/YYYY) ★</label>
-                <input id="grad" name="grad" placeholder="05/2026" required />
-              </div>
+          <div>
+            <label className="label">Summary (optional)</label>
+            <textarea className="textarea" rows={4} value={form.summary} onChange={e=>update("summary", e.target.value)} placeholder="Briefly describe your experience and interests."/>
+          </div>
+
+          <h3 style={{marginTop:24}}>Diversity & Compliance (optional)</h3>
+          <div className="row row-2">
+            <div>
+              <label className="label">Gender (optional)</label>
+              <select className="select" value={form.gender} onChange={e=>update("gender", e.target.value)}>
+                <option value="">I prefer not to answer</option>
+                <option>Woman</option><option>Man</option><option>Non-binary</option><option>Self-describe</option>
+              </select>
             </div>
-
-            <div className="grid-2">
-              <div className="field">
-                <label htmlFor="gpa">GPA (optional)</label>
-                <input id="gpa" name="gpa" placeholder="e.g., 3.7 / 4.0" />
-              </div>
-              <div className="field">
-                <label htmlFor="coursework">Relevant coursework (optional)</label>
-                <input id="coursework" name="coursework" placeholder="e.g., Data Structures, Finance 101" />
-              </div>
+            <div>
+              <label className="label">Ethnicity / Race (optional)</label>
+              <select className="select" value={form.ethnicity} onChange={e=>update("ethnicity", e.target.value)}>
+                <option value="">I prefer not to answer</option>
+                <option>Asian</option><option>Black or African American</option><option>Hispanic or Latino</option>
+                <option>Middle Eastern or North African</option><option>Native American or Alaska Native</option>
+                <option>Native Hawaiian or Other Pacific Islander</option><option>White</option><option>Two or more</option>
+              </select>
             </div>
-          </fieldset>
+          </div>
 
-          {/* ───────────────────────── Preferences ───────────────────────── */}
-          <fieldset className="section">
-            <legend>Role & preferences</legend>
-
-            <div className="grid-3">
-              <div className="field">
-                <label htmlFor="startDate">Earliest start date ★</label>
-                <input id="startDate" name="startDate" type="date" required />
-              </div>
-              <div className="field">
-                <label htmlFor="duration">Internship length ★</label>
-                <select id="duration" name="duration" required defaultValue="">
-                  <option value="" disabled>Select one</option>
-                  <option>8–10 weeks</option>
-                  <option>10–12 weeks</option>
-                  <option>Semester / 4–6 months</option>
-                </select>
-              </div>
-              <div className="field">
-                <label htmlFor="hours">Hours per week ★</label>
-                <select id="hours" name="hours" required defaultValue="">
-                  <option value="" disabled>Select one</option>
-                  <option>Part-time (≤ 20)</option>
-                  <option>Full-time (30–40)</option>
-                </select>
-              </div>
+          <div className="row row-2">
+            <div>
+              <label className="label">Veteran Status (optional)</label>
+              <select className="select" value={form.veteran} onChange={e=>update("veteran", e.target.value)}>
+                <option value="">I prefer not to answer</option>
+                <option>Not a veteran</option><option>Veteran</option>
+              </select>
             </div>
-
-            <div className="grid-3">
-              <div className="field">
-                <label htmlFor="workMode">Work mode ★</label>
-                <select id="workMode" name="workMode" required defaultValue="">
-                  <option value="" disabled>Select one</option>
-                  <option>Remote</option>
-                  <option>Hybrid</option>
-                  <option>On-site</option>
-                </select>
-              </div>
-              <div className="field">
-                <label htmlFor="locations">Preferred location(s)</label>
-                <input id="locations" name="locations" placeholder="City, State or Country" />
-              </div>
-              <div className="field">
-                <label htmlFor="relocate">Open to relocation?</label>
-                <select id="relocate" name="relocate" defaultValue="No">
-                  <option>No</option>
-                  <option>Yes</option>
-                  <option>Maybe</option>
-                </select>
-              </div>
+            <div>
+              <label className="label">Disability Status (optional)</label>
+              <select className="select" value={form.disability} onChange={e=>update("disability", e.target.value)}>
+                <option value="">I prefer not to answer</option>
+                <option>No disability</option><option>Has a disability</option>
+              </select>
             </div>
+          </div>
 
-            <div className="field">
-              <label htmlFor="skills">Key skills ★</label>
-              <input id="skills" name="skills" required placeholder="e.g., Python, Figma, Excel, Customer Support" />
-            </div>
-          </fieldset>
-
-          {/* ───────────────────────── Links ───────────────────────── */}
-          <fieldset className="section">
-            <legend>Links</legend>
-            <div className="grid-3">
-              <div className="field">
-                <label htmlFor="linkedin">LinkedIn</label>
-                <input id="linkedin" name="linkedin" type="url" placeholder="https://…" />
-              </div>
-              <div className="field">
-                <label htmlFor="github">GitHub / Portfolio</label>
-                <input id="github" name="github" type="url" placeholder="https://…" />
-              </div>
-              <div className="field">
-                <label htmlFor="website">Personal website</label>
-                <input id="website" name="website" type="url" placeholder="https://…" />
-              </div>
-            </div>
-          </fieldset>
-
-          {/* ───────────────────────── Documents ───────────────────────── */}
-          <fieldset className="section">
-            <legend>Documents</legend>
-            <div className="grid-2">
-              <div className="field file">
-                <label htmlFor="resume">Resume (PDF) ★</label>
-                <input
-                  id="resume"
-                  name="resume"
-                  type="file"
-                  accept=".pdf"
-                  required
-                  onChange={(e) => setResumeName(e.target.files?.[0]?.name || "")}
-                />
-                {resumeName && <span className="file-name">{resumeName}</span>}
-              </div>
-              <div className="field file">
-                <label htmlFor="cover">Cover letter (PDF)</label>
-                <input
-                  id="cover"
-                  name="cover"
-                  type="file"
-                  accept=".pdf"
-                  onChange={(e) => setCoverName(e.target.files?.[0]?.name || "")}
-                />
-                {coverName && <span className="file-name">{coverName}</span>}
-              </div>
-            </div>
-
-            <div className="field">
-              <label htmlFor="summary">Experience summary (2–3 sentences)</label>
-              <textarea id="summary" name="summary" rows="4" placeholder="Tell us briefly about your most relevant experience…" />
-            </div>
-          </fieldset>
-
-          {/* ───────────────────────── Other ───────────────────────── */}
-          <fieldset className="section">
-            <legend>Other</legend>
-            <div className="grid-2">
-              <div className="field">
-                <label htmlFor="referral">How did you hear about us?</label>
-                <select id="referral" name="referral" defaultValue="">
-                  <option value="">Select one</option>
-                  <option>University career portal</option>
-                  <option>Referral</option>
-                  <option>Social media</option>
-                  <option>Job board</option>
-                  <option>Other</option>
-                </select>
-              </div>
-              <div className="field">
-                <label htmlFor="accommodations">Do you need any accommodations?</label>
-                <input id="accommodations" name="accommodations" placeholder="Optional" />
-              </div>
-            </div>
-
-            <label className="consent">
-              <input type="checkbox" required /> I consent to the processing of my data for recruiting.
-            </label>
-          </fieldset>
-
-          <div className="actions">
-            <button type="submit" className="btn btn-pro">Submit application</button>
+          <div style={{marginTop:20, display:"flex", gap:12}}>
+            <button className="btn btn-primary" type="submit">Submit Application</button>
           </div>
         </form>
-      </main>
-    </div>
+      </div>
+    </main>
   );
 }
